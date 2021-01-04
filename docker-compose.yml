@@ -1,0 +1,46 @@
+version: '3.2'
+services:
+
+  master:
+    image: ros:${ROS_DISTRO}
+    container_name: master
+    hostname: master
+    ports:
+      - "11312:11311"
+    command:
+      - roscore
+
+  usb_cam:
+    build: 
+      context: ./usb_cam
+      args:
+        - ROS_DISTRO=${ROS_DISTRO}
+    container_name: usb_cam
+    hostname: usb_cam
+    depends_on:
+      - master
+    environment:
+      ROS_MASTER_URI: http://master:11311
+    devices:
+      - /dev/video0:/dev/video0
+    logging:
+      driver: journald
+    stdin_open: true
+    tty: true
+
+  rtsp:
+    build: 
+      context: ./ros_rtsp
+      args:
+        - ROS_DISTRO=${ROS_DISTRO}
+    container_name: ros_rtsp
+    hostname: ros_rtsp
+    depends_on: 
+      - master
+      - usb_cam
+    environment: 
+      ROS_MASTER_URI: http://master:11311
+    ports:
+      - "8554:8554"
+    logging:
+      driver: journald

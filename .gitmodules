@@ -1,0 +1,6 @@
+[submodule "ros_rtsp"]
+	path = ros_rtsp
+	url = git@github.com:CircusMonkey/ros_rtsp.git
+[submodule "usb_cam"]
+	path = usb_cam
+	url = git@github.com:ros-drivers/usb_cam.git
